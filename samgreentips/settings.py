@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     'djoser',
     'backend',
      'rest_framework.authtoken',
-     'backend.apps.BackendConfig'
 ]
 
 MIDDLEWARE = [
@@ -76,6 +75,21 @@ WSGI_APPLICATION = 'samgreentips.wsgi.application'
 
 
 
+CSRF_TRUSTED_ORIGINS = {
+    "http://localhost:5173/",
+    "http://127.0.0.1:5173"
+    }
+
+
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    "http://127.0.0.1:5173",
+]
+
+
+CORS_ORIGIN_WHITELIST = [
+    "http://127.0.0.1:5173",
+]
+
 CORS_ALLOW_ALL_ORIGINS = True # If this is used then `CORS_ALLOWED_ORIGINS` will not have any effect
 CORS_ALLOW_CREDENTIALS = True
 
@@ -84,21 +98,10 @@ CORS_ALLOW_CREDENTIALS = True
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.environ.get("DB_NAME"),
-        'USER': os.environ.get("DB_HOST_USER"),
-        'PASSWORD': os.environ.get("DB_PASSWORD"),
-        'HOST':'localhost',
-        'PORT':'3306',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 

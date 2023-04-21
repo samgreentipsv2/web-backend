@@ -1,1 +1,0 @@
-web: gunicorn samgreentips.wsgi.py --log-file
