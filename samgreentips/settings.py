@@ -76,21 +76,6 @@ WSGI_APPLICATION = 'samgreentips.wsgi.application'
 
 
 
-CSRF_TRUSTED_ORIGINS = {
-    "http://localhost:5173/",
-    "http://127.0.0.1:5173"
-    }
-
-
-CORS_ALLOWED_ORIGIN_REGEXES = [
-    "http://127.0.0.1:5173",
-]
-
-
-CORS_ORIGIN_WHITELIST = [
-    "http://127.0.0.1:5173",
-]
-
 CORS_ALLOW_ALL_ORIGINS = True # If this is used then `CORS_ALLOWED_ORIGINS` will not have any effect
 CORS_ALLOW_CREDENTIALS = True
 
