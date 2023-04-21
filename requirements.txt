@@ -1,6 +1,6 @@
 alembic==1.9.2
 asgiref==3.5.2
-Authlib==1.1.0
+Authlib
 azure-mgmt-subscription==3.0.0
 Babel==2.11.0
 bcrypt==3.2.2
@@ -62,16 +62,16 @@ ldap3==2.9.1
 Mako==1.2.4
 Markdown==3.4.1
 MarkupSafe==2.1.2
-msal==1.20.0
+msal
 msal-extensions==0.3.1
 msrest==0.7.1
 mysql-client==0.0.1
 mysqlclient==2.1.1
 ndg-httpsclient==0.5.1
 oauthlib==3.2.2
-paramiko==3.0.0
+paramiko
 passlib==1.7.4
-pgadmin4==6.19
+pgadmin4
 Pillow==9.4.0
 platformdirs==2.5.2
 portalocker==2.7.0
