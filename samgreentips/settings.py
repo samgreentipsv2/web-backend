@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 import os
 load_dotenv()
 from datetime import timedelta
+# from samgreentips.postgresauthbackend import PostgresBackend
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -135,7 +136,7 @@ DATABASES = {
 
         'HOST': os.environ.get("DB_HOST"),
 
-        'PORT': '5521',
+        'PORT': os.environ.get("DB_PORT"),
     }
 }
 
@@ -224,7 +225,9 @@ REST_FRAMEWORK = {
 
 
 AUTHENTICATION_BACKENDS = (
-    ('django.contrib.auth.backends.ModelBackend'),
+      'django.contrib.auth.backends.ModelBackend',
+    'django.contrib.auth.backends.RemoteUserBackend',
+    # 'PostgresBackend'
 )
 
 SIMPLE_JWT = {
