@@ -193,7 +193,7 @@ def getvipcat(request):
 @renderer_classes([JSONRenderer]) 
 @permission_classes([AllowAny])
 def get_betoftheday(request):
-    game = Game.objects.filter(is_betoftheday = True, time =datetime.datetime.now())
+    game = Game.objects.filter(is_betoftheday = True).values('id', 'match', 'category__category_name' ,'odd', 'time')
     return Response({"betoftheday": game})
 
 
