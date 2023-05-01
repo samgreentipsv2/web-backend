@@ -12,8 +12,10 @@ urlpatterns = [
     path("freeinplay", views.freeinplay, name="freeinplay"),
     path("vipodd/<str:category>", views.getvipodds, name="vipodd"),
     path("vipcat", views.getvipcat, name="vipcat"),
+    path("freecat", views.getfreecat, name="freecat"),
     path("botd", views.get_betoftheday, name="botd"),
     path("freepred", views.get_freepredictions, name="freepred"),
+     path("password/reset/confirm/<uidb64>/<token>", views.password_reset_confirm, name="password-reset-confirm"),
 ]
 
 

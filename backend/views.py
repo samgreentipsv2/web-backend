@@ -1,12 +1,13 @@
 from datetime import date, timezone
 import datetime
+from django.http import HttpResponse
 from django import views
 from django.contrib import auth
 from django.db import IntegrityError
 from rest_framework.decorators import api_view
 from rest_framework import generics, permissions, serializers
 from rest_framework.response import Response
-from .models import User, Plan, Vip_Odds, Categories, Game, Free_Inplay_Odds, Vip_games
+from .models import User, Plan, Vip_Odds, Categories, Game, Free_Inplay_Odds, Vip_games, FreeCategories
 from .serializers import PlanSerializer
 from django.contrib.auth import authenticate, login, logout
 from djoser.views import UserViewSet
@@ -18,6 +19,13 @@ from json import JSONEncoder
 from rest_framework.decorators import api_view, permission_classes, renderer_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.renderers import JSONRenderer
+from django.shortcuts import render
+from django.contrib.auth.forms import SetPasswordForm
+from django.contrib.auth import get_user_model
+
+from django.utils.http import urlsafe_base64_decode
+from django.contrib.auth.tokens import default_token_generator
+from django.http import HttpResponseBadRequest
 
 
 
@@ -187,6 +195,15 @@ def getvipcat(request):
 
 
 
+@api_view(['GET'])
+@renderer_classes([JSONRenderer]) 
+@permission_classes([AllowAny])
+def getfreecat(request):
+    cat = FreeCategories.objects.all().values('id','category_name')
+    return Response({"categories": cat})
+
+
+
 # Get bet of the day
 
 @api_view(['GET'])
@@ -206,6 +223,45 @@ def get_betoftheday(request):
 def get_freepredictions(request):
     games = Game.objects.all().order_by('time').values('id', 'match', 'category__category_name' ,'odd', 'time')
     return Response({"games": games})
+
+
+
+
+
+
+
+
+User = get_user_model()
+
+def password_reset_confirm(request, uidb64, token):
+    try:
+        uid = str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+
+    if user is not None and default_token_generator.check_token(user, token):
+        if request.method == "POST":
+            form = SetPasswordForm(user, request.POST)
+            if form.is_valid():
+                form.save()
+                return HttpResponse("Password reset successful!")
+        else:
+            form = SetPasswordForm(user)
+        return render(request, "password_reset_confirm.html", {"form": form})
+    else:
+        return HttpResponseBadRequest("Invalid password reset link.")
+
+
+
+
+
+
+
+
+
+
+
 
 
 
