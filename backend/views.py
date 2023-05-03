@@ -7,7 +7,7 @@ from django.db import IntegrityError
 from rest_framework.decorators import api_view
 from rest_framework import generics, permissions, serializers
 from rest_framework.response import Response
-from .models import User, Plan, Vip_Odds, Categories, Game, Free_Inplay_Odds, Vip_games, FreeCategories
+from .models import User, Plan, Vip_Odds, Categories, Game, Free_Inplay_Odds, Vip_games, FreeCategories, Recent_vip_results
 from .serializers import PlanSerializer
 from django.contrib.auth import authenticate, login, logout
 from djoser.views import UserViewSet
@@ -223,6 +223,19 @@ def get_betoftheday(request):
 def get_freepredictions(request):
     games = Game.objects.all().order_by('time').values('id', 'match', 'category__category_name' ,'odd', 'time')
     return Response({"games": games})
+
+
+
+# Get Recent Results
+@api_view(['GET'])
+@renderer_classes([JSONRenderer]) 
+@permission_classes([AllowAny])
+def get_recent_results(request):
+     results= Recent_vip_results.objects.all().order_by('day')[:5].values('id', 'status', 'day')
+     return Response({"results": results})
+
+
+
 
 
 

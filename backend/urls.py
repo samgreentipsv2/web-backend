@@ -15,6 +15,7 @@ urlpatterns = [
     path("freecat", views.getfreecat, name="freecat"),
     path("botd", views.get_betoftheday, name="botd"),
     path("freepred", views.get_freepredictions, name="freepred"),
+    path("results", views.get_recent_results, name="results"),
      path("password/reset/confirm/<uidb64>/<token>", views.password_reset_confirm, name="password-reset-confirm"),
 ]
 

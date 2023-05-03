@@ -253,10 +253,17 @@ DJOSER = {
     'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,
     'SEND_CONFIRMATION_EMAIL': True,
     'SET_USERNAME_RETYPE': True,
+    'PASSWORD_RESET_CONFIRM_RETYPE': True,
     'SET_PASSWORD_RETYPE': True,
-    'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
+    'PASSWORD_RESET_CONFIRM_URL': '/password/reset/confirm/{uid}/{token}',
     'ACTIVATION_URL': '/activate/{uid}/{token}',
     'SEND_ACTIVATION_EMAIL': False,
+    'EMAIL': {
+        
+        "password_reset": "backend.email.PasswordResetEmail",
+        "password_changed_confirmation": "backend.email.PasswordChangedConfirmationEmail",
+        "confirmation": "backend.email.ConfirmationEmail",
+    },
      'SERIALIZERS': {
         'user_create': 'backend.serializers.UserCreateSerializer',
         'user': 'backend.serializers.UserCreateSerializer',

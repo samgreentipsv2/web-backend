@@ -128,7 +128,13 @@ class Vip_Odds(models.Model):
     sportybet_code = models.CharField(blank=True, max_length=30)
     bet9ja_code = models.CharField(blank=True, max_length=30)
     Helabet_code = models.CharField(blank=True, max_length=30)
-    date = models.DateField( null=True, blank=True, default=datetime.datetime.now())
+    date = models.DateField( null=True, blank=True)
+    
+    
+    
+class Recent_vip_results(models.Model):
+    status = models.BooleanField(default=False)
+    day = models.DateField( null=True, blank=True)
     
 
     
