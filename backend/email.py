@@ -11,5 +11,5 @@ class PasswordChangedConfirmationEmail(email.PasswordChangedConfirmationEmail):
     
 
 class ConfirmationEmail(email.ConfirmationEmail):
-    template_name = 'backend/onfirmation.html'
+    template_name = 'backend/confirmation.html'
     
