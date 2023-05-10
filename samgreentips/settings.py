@@ -77,7 +77,7 @@ WSGI_APPLICATION = 'samgreentips.wsgi.application'
 
 
 
-CSRF_TRUSTED_ORIGINS = ['https://*.samgreentips.com','http://127.0.0.1:5173']
+CSRF_TRUSTED_ORIGINS = ['https://test.samgreentips.com','https://samgreentips.com','https://www.samgreentips.com','http://127.0.0.1:5173']
 
 CORS_ALLOWED_ORIGIN_REGEXES = [
    "*"
