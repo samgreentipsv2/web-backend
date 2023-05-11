@@ -210,7 +210,7 @@ def getfreecat(request):
 @renderer_classes([JSONRenderer]) 
 @permission_classes([AllowAny])
 def get_betoftheday(request):
-    game = Game.objects.filter(is_betoftheday = True).values('id', 'match', 'category__category_name' ,'odd', 'time')
+    game = Game.objects.filter(is_betoftheday = True).values('id', 'match', 'category__category_name' ,'odd', 'time').order_by('time')[:1]
     return Response({"betoftheday": game})
 
 
