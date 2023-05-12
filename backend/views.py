@@ -164,7 +164,7 @@ def freeinplay(request):
 def getvipodds(request, category):
     if request.method == 'GET':
         vip_games = Vip_games.objects.filter(category__category_name=category).values('id', 'match', 'Prediction','odd', 'time').order_by('-time')
-        vip_odds = Vip_Odds.objects.filter(category__category_name=category).values('id','games','total_odds','category__category_name','betking_code','onexbet_code','twentytwobet_code','sportybet_code','bet9ja_code','Helabet_code', 'date').order_by('-time')
+        vip_odds = Vip_Odds.objects.filter(category__category_name=category).values('id','games','total_odds','category__category_name','betking_code','onexbet_code','twentytwobet_code','sportybet_code','bet9ja_code','Helabet_code', 'date').order_by('-date')
         return Response({"vipgames":vip_games ,"vipodds": vip_odds})
     
     # if request.method == 'POST':

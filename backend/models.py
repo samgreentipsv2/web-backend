@@ -93,6 +93,7 @@ class Free_Inplay_Odds(models.Model):
 class Game(models.Model):
     match= models.CharField(blank=True, max_length=300)
     category = models.ForeignKey(FreeCategories, on_delete=models.CASCADE, related_name="free_categories",blank=True, null=True)
+    odd =  models.DecimalField(decimal_places=2, max_digits=3, default=0, blank=True, null=True)
     league= models.CharField(blank=True, max_length=300)
     time = models.DateTimeField( blank=True, null=True)
     is_betoftheday = models.BooleanField( default =False, blank=True, null=True)
