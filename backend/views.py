@@ -152,7 +152,7 @@ def plan_expire(request):
 @renderer_classes([JSONRenderer]) 
 @permission_classes([AllowAny])
 def freeinplay(request):
-    all_freepred = Free_Inplay_Odds.objects.all().values('id', 'match', 'prediction', 'time')
+    all_freepred = Free_Inplay_Odds.objects.all().values('id', 'match', 'prediction', 'time').order_by('-time')
     return Response({"Freeinplaygames": all_freepred})
 
 
@@ -163,8 +163,8 @@ def freeinplay(request):
 @permission_classes([IsAuthenticated])
 def getvipodds(request, category):
     if request.method == 'GET':
-        vip_games = Vip_games.objects.filter(category__category_name=category).values('id', 'match', 'Prediction','odd', 'time')
-        vip_odds = Vip_Odds.objects.filter(category__category_name=category).values('id','games','total_odds','category__category_name','betking_code','onexbet_code','twentytwobet_code','sportybet_code','bet9ja_code','Helabet_code', 'date' )
+        vip_games = Vip_games.objects.filter(category__category_name=category).values('id', 'match', 'Prediction','odd', 'time').order_by('-time')
+        vip_odds = Vip_Odds.objects.filter(category__category_name=category).values('id','games','total_odds','category__category_name','betking_code','onexbet_code','twentytwobet_code','sportybet_code','bet9ja_code','Helabet_code', 'date').order_by('-time')
         return Response({"vipgames":vip_games ,"vipodds": vip_odds})
     
     # if request.method == 'POST':
@@ -210,7 +210,7 @@ def getfreecat(request):
 @renderer_classes([JSONRenderer]) 
 @permission_classes([AllowAny])
 def get_betoftheday(request):
-    game = Game.objects.filter(is_betoftheday = True).values('id', 'match', 'category__category_name' ,'odd', 'time').order_by('time')[:1]
+    game = Game.objects.filter(is_betoftheday = True).values('id', 'match', 'category__category_name' ,'league', 'time').order_by('-time')[:1]
     return Response({"betoftheday": game})
 
 
@@ -221,7 +221,7 @@ def get_betoftheday(request):
 @renderer_classes([JSONRenderer]) 
 @permission_classes([AllowAny])
 def get_freepredictions(request):
-    games = Game.objects.all().order_by('time').values('id', 'match', 'category__category_name' ,'odd', 'time')
+    games = Game.objects.all().values('id', 'match', 'category__category_name' ,'league', 'time').order_by('-time')
     return Response({"games": games})
 
 
