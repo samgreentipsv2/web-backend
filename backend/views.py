@@ -210,7 +210,7 @@ def getfreecat(request):
 @renderer_classes([JSONRenderer]) 
 @permission_classes([AllowAny])
 def get_betoftheday(request):
-    game = Game.objects.filter(is_betoftheday = True).values('id', 'match', 'category__category_name' ,'league', 'time').order_by('-time')[:1]
+    game = Game.objects.filter(is_betoftheday = True).values('id', 'match', 'category__category_name' ,'league', 'prediction', 'time').order_by('-time')[:1]
     return Response({"betoftheday": game})
 
 
@@ -221,7 +221,7 @@ def get_betoftheday(request):
 @renderer_classes([JSONRenderer]) 
 @permission_classes([AllowAny])
 def get_freepredictions(request):
-    games = Game.objects.all().values('id', 'match', 'category__category_name' ,'league', 'time').order_by('-time')
+    games = Game.objects.all().values('id', 'match', 'category__category_name' ,'league', 'prediction', 'time').order_by('-time')
     return Response({"games": games})
 
 
