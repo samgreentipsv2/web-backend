@@ -1,14 +1,15 @@
 from datetime import date, timezone
 import datetime
+from django.core import serializers
 from django.http import HttpResponse
 from django import views
 from django.contrib import auth
 from django.db import IntegrityError
 from rest_framework.decorators import api_view
-from rest_framework import generics, permissions, serializers
+from rest_framework import generics, permissions
 from rest_framework.response import Response
-from .models import User, Plan, Vip_Odds, Categories, Game, Free_Inplay_Odds, Vip_games, FreeCategories, Recent_vip_results
-from .serializers import PlanSerializer
+from .models import User, Plan, VipOdd, Categorie, Game, FreeInplayOdd, VipGame, FreeCategorie, RecentVipResult, FreePrediction, DailyBet
+
 from django.contrib.auth import authenticate, login, logout
 from djoser.views import UserViewSet
 from rest_framework.response import Response
@@ -22,10 +23,11 @@ from rest_framework.renderers import JSONRenderer
 from django.shortcuts import render
 from django.contrib.auth.forms import SetPasswordForm
 from django.contrib.auth import get_user_model
-
+from django.contrib.postgres.aggregates import ArrayAgg
 from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth.tokens import default_token_generator
 from django.http import HttpResponseBadRequest
+
 
 
 
@@ -112,13 +114,15 @@ def add_to_plan(request):
         data = json.loads(request.body)
         email = data.get("email", "")
         plan = data.get("plan", "")
+        day_subscribed = datetime.date.today()
         user = User.objects.get(email = email)
         plan_sub =  Plan.objects.get(name = plan)
         if len(request.body) > 0:
             if user.is_vip == False:
                 user.is_vip = True
                 user.plan_sub = plan_sub
-                user.save(update_fields=['is_vip','plan_sub'])
+                user.day_subscribed = day_subscribed
+                user.save(update_fields=['is_vip','plan_sub','day_subscribed'])
             else:
                 return Response(f'Already Subscribed to {plan}')
     return Response(f"{email} subscribed to {plan}")
@@ -130,20 +134,18 @@ def add_to_plan(request):
 @renderer_classes([JSONRenderer])
 @permission_classes([IsAuthenticated])
 def plan_expire(request):
-        if request.method == 'POST':
-            data = json.loads(request.body)
-            email = data.get("email", "")
-            plan = data.get("plan", "")
-            user = User.objects.get(email =email)
-            plan_sub =  Plan.objects.get(name = plan)
-            if len(request.body) > 0:
-                if user.is_vip == True:
-                    user.is_vip = False
-                    user.plan_sub = None
-                    user.save(update_fields=['is_vip','plan_sub'])
-                else:
-                    return Response(f'User Not Subscribed To {plan}')
-        return Response(f"{email} removed from {plan}")
+    user = request.user 
+    email = user.email
+    plan = user.plan_sub
+    if user.day_subscribed + plan.duration >= datetime.date.today():
+        if user.is_vip == True:
+            user.is_vip = False
+            user.plan_sub = None
+            user.day_subscribed = None
+            user.save(update_fields=['is_vip','plan_sub', 'day_subscribed'])
+        else:
+            return Response(f'User Not Subscribed To {plan}')
+    return Response(f"{email} removed from {plan}")
     
     
     
@@ -152,7 +154,7 @@ def plan_expire(request):
 @renderer_classes([JSONRenderer]) 
 @permission_classes([AllowAny])
 def freeinplay(request):
-    all_freepred = Free_Inplay_Odds.objects.all().values('id', 'match', 'prediction', 'time').order_by('-time')
+    all_freepred = FreeInplayOdd.objects.all().values('id', 'match', 'prediction', 'time').order_by('-time')
     return Response({"Freeinplaygames": all_freepred})
 
 
@@ -163,8 +165,8 @@ def freeinplay(request):
 @permission_classes([IsAuthenticated])
 def getvipodds(request, category):
     if request.method == 'GET':
-        vip_games = Vip_games.objects.filter(category__category_name=category).values('id', 'match', 'Prediction','odd', 'time').order_by('-time')
-        vip_odds = Vip_Odds.objects.filter(category__category_name=category).values('id','games','total_odds','category__category_name','betking_code','onexbet_code','twentytwobet_code','sportybet_code','bet9ja_code','Helabet_code', 'date').order_by('-date')
+        vip_games = VipGame.objects.filter(category__category_name=category).values('id', 'match', 'Prediction','odd', 'time').order_by('-time')
+        vip_odds = VipOdd.objects.filter(category__category_name=category).values('id','games','total_odds','category__category_name','betking_code','onexbet_code','twentytwobet_code','sportybet_code','bet9ja_code','Helabet_code', 'date').order_by('-date')
         return Response({"vipgames":vip_games ,"vipodds": vip_odds})
     
     # if request.method == 'POST':
@@ -190,7 +192,7 @@ def getvipodds(request, category):
 @renderer_classes([JSONRenderer]) 
 @permission_classes([IsAuthenticated])
 def getvipcat(request):
-    cat = Categories.objects.all().values('id','category_name')
+    cat = Categorie.objects.all().values('id','category_name')
     return Response({"categories": cat})
 
 
@@ -199,8 +201,26 @@ def getvipcat(request):
 @renderer_classes([JSONRenderer]) 
 @permission_classes([AllowAny])
 def getfreecat(request):
-    cat = FreeCategories.objects.all().values('id','category_name')
+    cat = FreeCategorie.objects.all().values('id','category_name')
     return Response({"categories": cat})
+
+
+
+        
+        
+# class GameSerializer(serializers.ModelSerializer):
+    
+#     class Meta:
+#         model = Game
+#         fields = '__all__'
+        
+        
+
+# class DailybetSerializer(serializers.ModelSerializer):
+#     games = GameSerializer(many=True)
+#     class Meta:
+#         model = DailyBet
+#         fields = '__all__'
 
 
 
@@ -210,8 +230,22 @@ def getfreecat(request):
 @renderer_classes([JSONRenderer]) 
 @permission_classes([AllowAny])
 def get_betoftheday(request):
-    game = Game.objects.filter(is_betoftheday = True).values('id', 'match', 'category__category_name' ,'league', 'prediction', 'time').order_by('-time')[:1]
-    return Response({"betoftheday": game})
+    # game = DailybetSerializer().data
+    model = DailyBet.objects.all()
+    ser_game = serializers.serialize('json', model)
+    des_game = serializers.deserialize('json' , ser_game)
+    
+    
+    games = []
+    
+    for obj in des_game:
+        instance = obj.object
+        games.append([{"id": instance.id ,"time":instance.time,"matches":[{"id":game.id, "league":game.league, "match":game.match, "prediction":game.prediction} for game in instance.games.all()]}]) # Get games values from deserialized data
+        
+
+    
+    
+    return Response({"betoftheday": games})
 
 
  
@@ -221,7 +255,18 @@ def get_betoftheday(request):
 @renderer_classes([JSONRenderer]) 
 @permission_classes([AllowAny])
 def get_freepredictions(request):
-    games = Game.objects.all().values('id', 'match', 'category__category_name' ,'league', 'prediction', 'time').order_by('-time')
+    model = FreePrediction.objects.all()
+    ser_game = serializers.serialize('json', model)
+    des_game = serializers.deserialize('json' , ser_game)
+    
+    
+    games = []
+    
+    for obj in des_game:
+        instance = obj.object
+        games.append([{"id": instance.id ,"time":instance.time,"matches":[{"id":game.id, "league":game.league, "match":game.match, "prediction":game.prediction} for game in instance.games.all()]}])
+        
+        
     return Response({"games": games})
 
 
@@ -231,8 +276,20 @@ def get_freepredictions(request):
 @renderer_classes([JSONRenderer]) 
 @permission_classes([AllowAny])
 def get_recent_results(request):
-     results= Recent_vip_results.objects.all().order_by('day')[:5].values('id', 'status', 'day')
+     results= RecentVipResult.objects.all().order_by('day')[:5].values('id', 'status', 'day')
      return Response({"results": results})
+ 
+ 
+
+#Get predictions by category
+
+@api_view(['GET'])
+@renderer_classes([JSONRenderer]) 
+@permission_classes([AllowAny])
+def games_by_category(request, category):
+    games  =  Game.objects.filter(category__category_name=category).values('id', 'category__category_name', 'prediction', 'match','league')
+    
+    return Response({"games": games})
 
 
 

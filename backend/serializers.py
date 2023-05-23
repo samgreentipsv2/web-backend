@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, Plan,  Categories, Game, Vip_Odds
+from .models import User, Plan,  Categorie, Game, VipOdd
 from django.contrib.auth import authenticate
 from djoser.serializers import UserCreateSerializer
 from django.contrib.auth import get_user_model

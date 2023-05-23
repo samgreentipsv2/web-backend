@@ -16,6 +16,7 @@ urlpatterns = [
     path("botd", views.get_betoftheday, name="botd"),
     path("freepred", views.get_freepredictions, name="freepred"),
     path("results", views.get_recent_results, name="results"),
+    path("gamebycat/<str:category>", views.games_by_category, name="gamebycat"),
      path("password/reset/confirm/<uidb64>/<token>", views.password_reset_confirm, name="password-reset-confirm"),
 ]
 
