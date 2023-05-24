@@ -3,8 +3,11 @@ from .models import User,Plan, Categorie, Game, VipOdd, FreeInplayOdd, FreeCateg
 
 # Register your models here.
 
+class UserAdmin(admin.ModelAdmin):
+    search_fields = ['email', 'first_name',]
 
-admin.site.register(User)
+
+admin.site.register(User, UserAdmin)
 admin.site.register(Plan)
 admin.site.register(Categorie)
 admin.site.register(Game)
@@ -16,3 +19,6 @@ admin.site.register(RecentVipResult)
 admin.site.register(FreePrediction)
 admin.site.register(DailyBet)
 # admin.site.register(SubRecord)
+
+
+
