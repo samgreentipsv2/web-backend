@@ -5,6 +5,7 @@ from .models import User,Plan, Categorie, Game, VipOdd, FreeInplayOdd, FreeCateg
 
 class UserAdmin(admin.ModelAdmin):
     search_fields = ['email', 'first_name',]
+    list_filter = ['is_vip', 'plan_sub']
 
 
 admin.site.register(User, UserAdmin)

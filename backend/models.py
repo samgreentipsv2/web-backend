@@ -21,7 +21,7 @@ class Plan(models.Model):
    
      
    def __str__(self):
-       return f"this plan lasts for {self.name} and costs {self.price} Naira" 
+       return f" {self.name}" 
    
 
 class UserManager(BaseUserManager):
@@ -51,8 +51,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(max_length=55, blank=True, null=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-    is_vip = models.BooleanField(default=False)
-    plan_sub = models.ForeignKey(Plan,on_delete=models.CASCADE, related_name="subscribed_to", blank=True, null=True)
+    is_vip = models.BooleanField(default=False, verbose_name="is VIP")
+    plan_sub = models.ForeignKey(Plan,on_delete=models.CASCADE, related_name="subscribed_to", blank=True, null=True, verbose_name="plan")
     day_subscribed = models.DateField(verbose_name="Subscription started", blank=True, null=True)
 
     objects = UserManager()
