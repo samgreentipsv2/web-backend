@@ -231,7 +231,7 @@ def getfreecat(request):
 @permission_classes([AllowAny])
 def get_betoftheday(request):
     # game = DailybetSerializer().data
-    model = DailyBet.objects.all()
+    model = DailyBet.objects.filter(time = datetime.date.today())
     ser_game = serializers.serialize('json', model)
     des_game = serializers.deserialize('json' , ser_game)
     
@@ -240,7 +240,7 @@ def get_betoftheday(request):
     
     for obj in des_game:
         instance = obj.object
-        games.append([{"id": instance.id ,"time":instance.time,"matches":[{"id":game.id, "league":game.league, "match":game.match, "prediction":game.prediction} for game in instance.games.all()]}]) # Get games values from deserialized data
+        games.append([{"id": instance.id ,"time":instance.time,"matches":[{"id":game.id, "league":game.league, "match":game.match, "prediction":game.prediction, "time": game.time} for game in instance.games.all()]}]) # Get games values from deserialized data
         
 
     

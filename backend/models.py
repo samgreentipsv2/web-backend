@@ -89,7 +89,7 @@ class Game(models.Model):
     prediction= models.CharField(blank=True, max_length=300, verbose_name='prediction')
     # odd =  models.DecimalField(decimal_places=2, max_digits=3, default=0, blank=True, null=True)
     league= models.CharField(blank=True, max_length=300)
-    # time = models.DateField( blank=True, null=True)
+    time = models.DateTimeField(blank=True, null=True)
     # is_betoftheday = models.BooleanField( default =False, blank=True, null=True)
     
     
