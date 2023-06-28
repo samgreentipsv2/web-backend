@@ -17,7 +17,7 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseU
 class Plan(models.Model):
    name = models.CharField(blank=True, max_length=300)
    price = models.DecimalField(decimal_places=2, max_digits=9, default=0, blank=True, null=True)
-   duration= models.DurationField( default=datetime.timedelta(weeks=1),blank=True, null=True)
+   duration= models.DurationField(default=datetime.timedelta(weeks=1),blank=True, null=True)
    
      
    def __str__(self):

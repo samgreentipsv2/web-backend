@@ -54,6 +54,14 @@ def get_user(request, email):
     user = User.objects.filter(email =email).values('id','first_name', 'last_name', 'email', 'is_superuser', 'is_staff', 'is_vip')
     if len(user) == 0:
         raise Exception("User Not Found!")
+    
+    plan = user.plan_sub
+    if user.day_subscribed + plan.duration >= datetime.date.today():
+        if user.is_vip == True:
+            user.is_vip = False
+            user.plan_sub = None
+            user.day_subscribed = None
+            user.save(update_fields=['is_vip','plan_sub', 'day_subscribed'])
     return Response({"user": user})
 
 
@@ -130,7 +138,7 @@ def add_to_plan(request):
 
 
 #remove user from a plan
-@api_view(['GET', 'POST'])
+
 @renderer_classes([JSONRenderer])
 @permission_classes([IsAuthenticated])
 def plan_expire(request):

@@ -5,6 +5,7 @@ from . import views
 urlpatterns = [
     path("user/<str:email>", views.get_user, name="user"),
     path("users", views.users, name="users"),
+    path("", views.plan_expire, name=""),
     path("plans", views.plans, name="plans"),
     path("plan/<str:name>", views.get_plan, name="plan"),
     path("addvip", views.add_to_plan, name="addvip"),
